@@ -67,11 +67,27 @@ export default function AdminDashboard() {
 
   // 1. Category CRUD
   const handleAddCategory = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const slug = catName.toLowerCase().replace(/ /g, '-');
-    const { error } = await supabase.from('mastan_categories').insert([{ name: catName, slug }]);
-    if (!error) { setCatName(''); fetchData(); alert('Category Added Successfully!'); }
-  };
+  e.preventDefault();
+  const slug = catName.toLowerCase().replace(/ /g, '-');
+  
+  console.log("Inserting category into table: mastan_categories...");
+  
+  const { data, error } = await supabase
+    .from('mastan_categories') // Check karein agar aapke table ka naam exact yahi hai
+    .insert([{ name: catName, slug }])
+    .select();
+
+  if (error) {
+    // Yeh line aapko inspect element -> console mein exact error batayegi
+    console.error("❌ Supabase Category Add Error:", error.message, error.details, error.hint);
+    alert(`Category add nahi hui! Error: ${error.message}`);
+  } else {
+    console.log("✅ Category added successfully:", data);
+    setCatName(''); 
+    fetchData(); 
+    alert('Category Added Successfully!'); 
+  }
+};
 
   const handleDeleteCategory = async (id: string) => {
     if (confirm("Are you sure you want to delete this category?")) {
