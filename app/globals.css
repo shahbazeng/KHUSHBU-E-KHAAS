@@ -1,0 +1,73 @@
+@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* consolidated Variables for Light Luxury Theme */
+:root {
+  --background: #FAFAFA;   /* Ivory White */
+  --foreground: #1A1A1A;   /* Soft Black */
+  --gold: #B8860B;         /* Deep Premium Gold */
+  --gold-soft: #D4AF37;    /* Secondary Gold */
+  --card-bg: #FFFFFF;      /* Pure White for cards */
+}
+
+/* Agar user dark mode use kare tab bhi hum force light ya soft look rakhenge */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #FAFAFA; 
+    --foreground: #1A1A1A;
+  }
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-gold: var(--gold);
+  --color-gold-soft: var(--gold-soft);
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  /* Modern Luxury Fonts */
+  font-family: 'Inter', 'Playfair Display', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Smooth Scrolling for a premium feel */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom Scrollbar for Luxury Look */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--gold);
+  border-radius: 10px;
+} 
+
+
+/* Add this specific layer to resolve the conflict with your custom scrollbar */
+@layer utilities {
+  /* Carousel Container Fix: Force smooth snapping and hide internal scrollbars */
+  .no-scrollbar {
+    display: flex;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch; /* Mobile smooth scroll */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+  }
+
+  /* Force display: none to override your custom global ::-webkit-scrollbar rule only here */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none !important; /* Forces the Carousel internal scrollbar to hide */
+  }
+}
