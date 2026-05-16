@@ -110,7 +110,6 @@ export default function LuxuryLanding() {
             <Link href="/auth" className={`text-[11px] uppercase tracking-wider transition-colors font-bold ${isScrolled ? 'text-gray-500 hover:text-gray-900' : 'text-gray-400 hover:text-white'}`}>Login</Link>
           )}
           
-          {/* CART CTA TRIGGER */}
           <button 
             onClick={() => setIsCartOpen(true)}
             className="text-[11px] bg-gradient-to-r from-[#B8860B] to-[#D4AF37] text-white px-6 py-2.5 rounded-full hover:brightness-110 transition-all tracking-widest font-bold shadow-md shadow-[#B8860B]/10 flex items-center gap-2 hover:scale-[1.03] active:scale-[0.98]"
@@ -151,7 +150,6 @@ export default function LuxuryLanding() {
           </div>
 
           <div className="relative flex justify-center items-center h-full">
-            {/* Ambient Lighting Layer */}
             <div className="absolute w-[80%] h-[80%] bg-gradient-to-tr from-[#B8860B]/20 to-transparent rounded-full blur-3xl z-0"></div>
             <div className="relative p-3 bg-gradient-to-b from-[#D4AF37]/20 to-transparent rounded-[3.2rem] shadow-2xl">
               <img 
@@ -180,7 +178,6 @@ export default function LuxuryLanding() {
             {bestSellers.map((item) => (
               <div key={item.id} className="bg-white rounded-[2.5rem] border border-gray-100/80 p-5 shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all duration-500 flex flex-col justify-between group relative">
                 
-                {/* Image Wrap Wrapper */}
                 <div className="relative overflow-hidden bg-gradient-to-b from-gray-50 to-white rounded-[2rem] mb-6 aspect-[4/5] flex items-center justify-center border border-gray-50">
                   <img 
                     src={item.image_url || "https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80"} 
@@ -188,7 +185,6 @@ export default function LuxuryLanding() {
                     className="w-full h-full object-cover transition-transform duration-[1.2s] ease-out group-hover:scale-[1.04]" 
                   />
                   
-                  {/* Smooth Card Bottom Trigger Element */}
                   <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/50 via-black/5 to-transparent p-6 translate-y-6 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-400">
                     <button 
                       onClick={() => {
@@ -202,7 +198,6 @@ export default function LuxuryLanding() {
                   </div>
                 </div>
 
-                {/* Info Text Nodes */}
                 <div className="px-3 pb-3 space-y-3 text-left">
                   <div className="flex justify-between items-start gap-4">
                     <h4 className="text-gray-900 text-xl font-medium tracking-tight font-serif line-clamp-1">{item.name}</h4>
@@ -328,11 +323,60 @@ export default function LuxuryLanding() {
         </div>
       )}
 
-      {/* 6. GLOBAL LUXE FOOTER */}
-      <footer className="py-20 px-12 bg-slate-950 text-center border-t border-slate-900 text-gray-500">
-        <div className="max-w-7xl mx-auto space-y-4">
-          <p className="text-[11px] tracking-[0.3em] uppercase font-bold text-[#D4AF37]/60">Khushbu-e-Khaas Perfumes</p>
-          <p className="text-[10px] tracking-widest font-mono">© 2026 | Lahore, Pakistan</p>
+      {/* 6. GRAND LUXURY DYNAMIC FOOTER (UPDATED) */}
+      <footer className="bg-slate-950 text-gray-400 font-sans text-xs pt-20 pb-10 px-6 md:px-16 border-t border-slate-900 relative z-10">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 border-b border-slate-800 pb-16 mb-10">
+          
+          {/* Brand Identity Pillar */}
+          <div className="space-y-4">
+            <h3 className="tracking-[0.25em] text-sm font-extrabold text-white uppercase">
+              Khushbu<span className="text-[#D4AF37] font-serif lowercase italic font-normal tracking-normal">e</span>Khaas
+            </h3>
+            <p className="text-gray-500 text-xs leading-relaxed font-light">
+              Crafting supreme, long-lasting fragrance variants inspired by iconic luxury scents from across the globe.
+            </p>
+          </div>
+
+          {/* Quick Navigations Pillar */}
+          <div className="space-y-4">
+            <h4 className="text-white text-[11px] uppercase tracking-widest font-bold">Navigation</h4>
+            <ul className="space-y-2 text-gray-500 text-xs font-semibold">
+              <li><a href="#collection" className="hover:text-[#D4AF37] transition-colors">Our Collection</a></li>
+              <li><a href="#coming-soon" className="hover:text-[#D4AF37] transition-colors">Future Releases</a></li>
+              <li><Link href="/admin" className="hover:text-[#D4AF37] transition-colors">Admin Dashboard</Link></li>
+            </ul>
+          </div>
+
+          {/* REAL FLAGSHIP STORE LOCATION ADDRESS INTERFACE */}
+          <div className="space-y-4 md:col-span-2">
+            <h4 className="text-white text-[11px] uppercase tracking-widest font-bold">Flagship Store Location</h4>
+            <div className="flex items-start gap-3 text-gray-500 text-xs font-normal leading-relaxed bg-white/5 p-4 rounded-2xl border border-white/5">
+              <svg className="w-5 h-5 text-[#D4AF37] flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              <div>
+                <p className="text-white font-bold font-serif mb-1">Khushbu-e-Khaas Boutique</p>
+                <p className="font-medium text-gray-400">Shop # E5-B2, Grand Square Mall,</p>
+                <p className="text-gray-500 text-[11px] font-mono mt-0.5">Main Boulevard Gulberg, Lahore, Pakistan</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        {/* BOTTOM METADATA & PAYMENT NODES BADGES */}
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6 text-gray-600 text-[11px]">
+          <p className="font-medium tracking-wide">
+            © 2026 Khushbu-e-Khaas Scent Matrix. Built securely by Shahbaz Ali.
+          </p>
+          
+          {/* Secure Payment System Nodes Badges Placeholder */}
+          <div className="flex items-center gap-3 font-mono text-[9px] uppercase tracking-wider font-bold">
+            <span className="bg-white/5 border border-white/5 px-2.5 py-1 rounded-md text-gray-500">Easypaisa</span>
+            <span className="bg-white/5 border border-white/5 px-2.5 py-1 rounded-md text-gray-500">NayaPay</span>
+            <span className="bg-white/5 border border-white/5 px-2.5 py-1 rounded-md text-gray-500">Bank AL Habib</span>
+          </div>
         </div>
       </footer>
 
