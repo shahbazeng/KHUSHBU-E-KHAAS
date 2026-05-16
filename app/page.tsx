@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
-import { useApp } from '@/context/AppContext'; // Context Hook connect kiya
+import { useApp } from '@/context/AppContext';
 import Link from 'next/link';
 
 interface Perfume {
@@ -21,26 +21,25 @@ interface Perfume {
 export default function LuxuryLanding() {
   const [products, setProducts] = useState<Perfume[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isCartOpen, setIsCartOpen] = useState(false); // Cart sidebar state
+  const [isCartOpen, setIsCartOpen] = useState(false);
 
-  // Global Context se Cart aur User utilities nikaal li
   const { cart, addToCart, removeFromCart, user } = useApp();
 
   useEffect(() => {
     async function getProducts() {
       try {
         const { data, error } = await supabase
-          .from('mastan_perfumes') // Admin Dashboard wale live table se connect kiya
+          .from('mastan_perfumes')
           .select('*');
         
         if (error) {
-          console.error("Supabase Database Error Details:", error.message);
+          console.error("Database Error:", error.message);
           return;
         }
         
         if (data) setProducts(data);
       } catch (err) {
-        console.error("General Fetch Error:", err);
+        console.error("Fetch Error:", err);
       } finally {
         setLoading(false);
       }
@@ -51,194 +50,216 @@ export default function LuxuryLanding() {
   const bestSellers = products.filter(p => !p.is_coming_soon);
   const comingSoon = products.filter(p => p.is_coming_soon);
 
-  // Total items calculate karne ke liye accumulator node
   const totalCartItems = cart.reduce((total, item) => total + item.quantity, 0);
   const cartTotalPrice = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
 
   if (loading) {
     return (
       <div className="bg-[#FAFAFA] min-h-screen flex items-center justify-center">
-        <p className="text-[#B8860B] tracking-widest font-sans uppercase text-[10px] animate-pulse">
-          Khushbu-e-Khaas loading matrix...
+        <p className="text-[#B8860B] tracking-[0.3em] font-sans uppercase text-[11px] font-bold animate-pulse">
+          Loading Khushbu-e-Khaas...
         </p>
       </div>
     );
   }
 
   return (
-    <div className="bg-[#FAFAFA] min-h-screen text-[#1A1A1A] font-serif selection:bg-[#B8860B] selection:text-white relative">
+    <div className="bg-[#FAFAFA] min-h-screen text-[#1A1A1A] font-serif selection:bg-[#B8860B] selection:text-white relative antialiased">
       
       {/* 1. LUXURY NAVBAR */}
-      <nav className="fixed w-full z-[100] px-8 md:px-12 py-4 flex justify-between items-center bg-white/70 backdrop-blur-md border-b border-gray-100">
-        <Link href="/" className="tracking-[0.4em] text-lg font-light text-[#B8860B]">
-          <span className="font-serif uppercase tracking-widest text-sm font-bold text-gray-900">Khushbu-e-Khaas</span>
+      <nav className="fixed w-full z-[100] px-6 md:px-16 py-5 flex justify-between items-center bg-white/80 backdrop-blur-lg border-b border-gray-100 transition-all">
+        <Link href="/" className="tracking-[0.3em] text-lg font-bold text-gray-900 uppercase">
+          Khushbu-e-Khaas
         </Link>
         
-        <div className="hidden md:flex space-x-10 text-[10px] text-gray-500 uppercase tracking-[0.2em] font-sans font-semibold">
-          <a href="#collection" className="hover:text-[#B8860B] transition-all">Collections</a>
-          <a href="#coming-soon" className="hover:text-[#B8860B] transition-all">Future Drops</a>
-          <Link href="/admin" className="hover:text-[#B8860B] text-slate-400 transition-all">Admin Panel</Link>
+        <div className="hidden md:flex space-x-12 text-[11px] text-gray-500 uppercase tracking-[0.25em] font-sans font-bold">
+          <a href="#collection" className="hover:text-[#B8860B] transition-colors">Our Collection</a>
+          <a href="#coming-soon" className="hover:text-[#B8860B] transition-colors">New Drops</a>
+          <Link href="/admin" className="text-gray-400 hover:text-gray-900 transition-colors">Dashboard</Link>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-6">
           {user ? (
-            <span className="text-[9px] font-mono uppercase bg-gray-100 text-gray-600 px-3 py-1 rounded-full">Secure Session Active</span>
+            <span className="text-[10px] font-mono uppercase bg-emerald-50 text-emerald-700 border border-emerald-100 px-3 py-1 rounded-full font-bold">Logged In</span>
           ) : (
-            <Link href="/auth" className="text-[10px] uppercase tracking-wider text-gray-400 hover:text-gray-900 transition-all font-sans">Login</Link>
+            <Link href="/auth" className="text-[11px] uppercase tracking-wider text-gray-400 hover:text-gray-900 transition-colors font-sans font-bold">Login</Link>
           )}
           
-          {/* Cart Interaction Trigger Toggle Button */}
           <button 
             onClick={() => setIsCartOpen(true)}
-            className="text-[10px] text-[#B8860B] border border-[#B8860B]/30 px-6 py-2.5 rounded-full hover:bg-[#B8860B] hover:text-white transition-all tracking-widest font-sans font-bold shadow-sm flex items-center gap-2"
+            className="text-[11px] text-white bg-gray-900 px-6 py-2.5 rounded-full hover:bg-[#B8860B] transition-all tracking-widest font-sans font-bold shadow-sm flex items-center gap-2"
           >
-            CART <span className="bg-[#B8860B] text-white group-hover:bg-white group-hover:text-[#B8860B] text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-mono">{totalCartItems}</span>
+            CART 
+            <span className="bg-[#B8860B] text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-mono font-bold">
+              {totalCartItems}
+            </span>
           </button>
         </div>
       </nav>
 
-      {/* 2. HERO BANNER LAYER */}
-      <header className="relative h-[70vh] md:h-[80vh] w-full bg-[#FAFAFA] flex items-center overflow-hidden mt-16 px-6 md:px-16">
-        <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-10 items-center w-full relative z-10">
-          <div className="text-left animate-fade-in-up">
-            <div className="flex items-center gap-3 mb-6">
-              <span className="text-[#B8860B] tracking-[0.4em] text-[10px] uppercase font-bold">Premium Inspired Series</span>
-              <div className="h-[1px] w-12 bg-[#B8860B]/30"></div>
+      {/* 2. HERO BANNER */}
+      <header className="relative h-[85vh] w-full bg-gradient-to-b from-white to-[#FAFAFA] flex items-center overflow-hidden pt-16 px-6 md:px-16">
+        <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center w-full relative z-10">
+          <div className="text-left space-y-6">
+            <div className="flex items-center gap-3">
+              <span className="text-[#B8860B] tracking-[0.3em] text-[11px] uppercase font-extrabold font-sans">Premium Inspired Fragrances</span>
+              <div className="h-[1px] w-16 bg-[#B8860B]/30"></div>
             </div>
-            <h1 className="text-5xl md:text-7xl font-light text-[#1A1A1A] leading-tight mb-6">
+            <h1 className="text-5xl md:text-7xl font-light text-gray-900 leading-[1.15]">
               Elegance in <br />
-              <span className="italic font-serif text-[#B8860B]">Every Spray</span>
+              <span className="italic font-serif text-[#B8860B]">Every Single Spray</span>
             </h1>
-            <p className="text-gray-500 text-sm md:text-base font-light leading-relaxed mb-10 max-w-md font-sans">
-              Khushbu-e-Khaas brings you the world's most loved fragrances. Crafted for those who seek confidence.
+            <p className="text-gray-500 text-sm md:text-base font-light leading-relaxed max-w-md font-sans">
+              Discover beautifully crafted scents inspired by global luxury classics. Designed for lasting confidence, tailored for you.
             </p>
-            <div className="flex flex-wrap gap-4">
-              <a href="#collection" className="px-10 py-4 bg-[#1A1A1A] text-white rounded-full text-[10px] uppercase tracking-widest font-bold hover:bg-[#B8860B] transition-all shadow-lg text-center font-sans">Explore Catalog</a>
+            <div className="pt-4">
+              <a href="#collection" className="px-10 py-4 bg-gray-900 text-white rounded-full text-[11px] uppercase tracking-widest font-bold hover:bg-[#B8860B] transition-all shadow-xl font-sans inline-block">
+                Browse Collection
+              </a>
             </div>
           </div>
-          <div className="relative flex justify-center items-center h-full group">
-            <div className="absolute w-[80%] h-[80%] bg-[#B8860B]/5 rounded-full blur-3xl"></div>
-            <div className="relative z-20 drop-shadow-[0_20px_50px_rgba(0,0,0,0.1)]">
-              <img src="https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&q=80&w=800" alt="Bottle" className="h-[400px] md:h-[550px] object-contain rounded-[3rem]" />
-            </div>
+          <div className="relative flex justify-center items-center h-full">
+            <div className="absolute w-[90%] h-[90%] bg-[#B8860B]/5 rounded-full blur-3xl"></div>
+            <img 
+              src="https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&q=80&w=800" 
+              alt="Luxury Perfume Showcase" 
+              className="h-[450px] md:h-[580px] object-cover rounded-[2.5rem] shadow-2xl relative z-20 transition-transform duration-700 hover:scale-[1.02]" 
+            />
           </div>
         </div>
       </header>
 
-      {/* 3. BEST SELLING CATALOG (CONNECTED TO LIVE ACTIONS) */}
-      <section id="collection" className="py-24 px-6 md:px-12 bg-white">
-        <div className="text-center mb-16">
-          <h2 className="text-[#B8860B] text-xs tracking-[0.5em] uppercase mb-4 font-sans font-bold">Most Loved</h2>
-          <h3 className="text-3xl md:text-5xl font-light text-[#1A1A1A]">Best <span className="italic text-[#B8860B]">Sellers</span></h3>
+      {/* 3. BEST SELLERS SECTION (REFINED HIGH-END UI CARDS) */}
+      <section id="collection" className="py-28 px-6 md:px-16 bg-white border-t border-gray-50">
+        <div className="text-center mb-20 space-y-2">
+          <h2 className="text-[#B8860B] text-xs tracking-[0.4em] uppercase font-sans font-extrabold">Customer Favorites</h2>
+          <h3 className="text-3xl md:text-5xl font-light text-gray-900">Our Best <span className="italic text-[#B8860B]">Sellers</span></h3>
         </div>
         
         {bestSellers.length === 0 ? (
-          <p className="text-center text-gray-400 text-xs font-sans">No fragrances currently uploaded in best sellers framework. Head to admin dashboard to insert rows.</p>
+          <p className="text-center text-gray-400 text-xs font-sans py-12">No products found in our storefront display right now.</p>
         ) : (
-          <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12">
+          <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10">
             {bestSellers.map((item) => (
-              <div key={item.id} className="group text-center">
-                <div className="relative overflow-hidden bg-[#f9f9f9] mb-6 rounded-[2rem] shadow-md border border-gray-50 transition-all duration-500">
-                  <img src={item.image_url || "https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80"} alt={item.name} className="w-full aspect-[4/5] object-cover opacity-90 group-hover:scale-105 transition-all duration-700" />
+              <div key={item.id} className="bg-white border border-gray-100 rounded-[2rem] p-4 shadow-sm hover:shadow-xl transition-all duration-500 flex flex-col justify-between group">
+                
+                {/* Refined Image Container */}
+                <div className="relative overflow-hidden bg-[#FBFBFB] rounded-[1.5rem] mb-6 aspect-[4/5] flex items-center justify-center">
+                  <img 
+                    src={item.image_url || "https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80"} 
+                    alt={item.name} 
+                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" 
+                  />
                   
-                  {/* Dynamic Add to Cart Dispatch Trigger Action */}
-                  <button 
-                    onClick={() => {
-                      addToCart(item);
-                      setIsCartOpen(true); // Product add hotay hi side panel slider open hoga
-                    }}
-                    className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[80%] py-3.5 bg-gray-900/95 backdrop-blur-md rounded-full text-[10px] tracking-widest uppercase font-bold text-white opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 shadow-xl font-sans"
-                  >
-                    Add to Cart
-                  </button>
+                  {/* Premium Hover Add to Cart Action */}
+                  <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center p-6">
+                    <button 
+                      onClick={() => {
+                        addToCart(item);
+                        setIsCartOpen(true);
+                      }}
+                      className="w-full py-4 bg-gray-900 text-white rounded-xl text-[11px] tracking-widest uppercase font-bold hover:bg-[#B8860B] transition-all transform translate-y-4 group-hover:translate-y-0 duration-500 shadow-xl font-sans"
+                    >
+                      Add to Basket
+                    </button>
+                  </div>
                 </div>
-                <h4 className="text-[#1A1A1A] tracking-widest text-xs uppercase mb-1 font-bold">{item.name}</h4>
-                <p className="text-gray-400 text-[10px] font-mono mb-2 tracking-wider uppercase">{item.inspired_by || 'Premium Scent Matrix'}</p>
-                <p className="text-[#B8860B] text-sm font-sans font-bold">Rs. {item.price}</p>
+
+                {/* Meta Description Elements */}
+                <div className="px-2 pb-2 space-y-2 text-left">
+                  <h4 className="text-gray-900 font-serif text-lg font-medium">{item.name}</h4>
+                  <p className="text-gray-400 text-[10px] font-sans font-bold uppercase tracking-wider bg-gray-50 w-fit px-2.5 py-1 rounded-md border border-gray-100">
+                    {item.inspired_by || 'Original Fragrance'}
+                  </p>
+                  <p className="text-gray-500 text-xs font-sans font-light line-clamp-2 leading-relaxed">
+                    {item.description || 'No description available for this premium fragrance variant.'}
+                  </p>
+                  <div className="pt-2 border-t border-gray-50 flex items-center justify-between">
+                    <span className="text-gray-400 text-[10px] font-sans uppercase font-bold tracking-wider">Price</span>
+                    <span className="text-[#B8860B] font-sans font-bold text-base">Rs. {item.price}</span>
+                  </div>
+                </div>
+
               </div>
             ))}
           </div>
         )}
       </section>
 
-      {/* 4. FUTURE RELEASES drops SECTION */}
-      <section id="coming-soon" className="py-24 px-6 md:px-12 bg-[#F9F9F9] overflow-hidden">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-16 px-4">
-            <div>
-              <h2 className="text-[#B8860B] text-[10px] tracking-[0.5em] uppercase mb-4 font-bold font-sans">Future Drops</h2>
-              <h3 className="text-4xl md:text-6xl font-light text-[#1A1A1A] font-serif">Coming <span className="italic text-[#B8860B]">Soon</span></h3>
-            </div>
-          </div>
+      {/* 4. FUTURE RELEASES DROPS SECTION */}
+      <section id="coming-soon" className="py-28 px-6 md:px-16 bg-[#FBFBFB] border-t border-b border-gray-100 overflow-hidden">
+        <div className="max-w-7xl mx-auto mb-16">
+          <h2 className="text-[#B8860B] text-[11px] tracking-[0.4em] uppercase font-extrabold font-sans mb-2">Exciting Future Additions</h2>
+          <h3 className="text-4xl md:text-5xl font-light text-gray-900">Coming <span className="italic text-[#B8860B]">Soon</span></h3>
+        </div>
 
-          <div className="flex flex-nowrap gap-6 overflow-x-auto pb-12 pt-4 px-4 no-scrollbar snap-x snap-mandatory scroll-smooth cursor-grab">
-            {comingSoon.map((perfume) => (
-              <div key={perfume.id} className="min-w-[280px] md:min-w-[350px] snap-start flex-shrink-0 group">
-                <div className="relative h-[450px] bg-white rounded-[2.5rem] overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-700 border border-gray-100">
-                  <div className="absolute inset-0 z-0">
-                    <img src={perfume.image_url || "/BLUE-DE.jpeg"} alt={perfume.name} className="w-full h-full object-cover opacity-100 group-hover:scale-110 transition-all duration-1000 ease-in-out" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-90 group-hover:opacity-70 transition-opacity duration-700"></div>
-                  </div>
-                  <div className="absolute top-6 left-6 z-10">
-                    <span className="bg-white/10 backdrop-blur-md border border-white/20 text-white text-[8px] font-bold px-4 py-2 rounded-full tracking-widest uppercase font-sans shadow-lg">
-                      Summer 2026
-                    </span>
-                  </div>
-                  <div className="relative z-10 h-full flex flex-col justify-end p-8">
-                    <span className="text-[#D4AF37] text-[9px] uppercase tracking-[0.3em] font-bold mb-2">{perfume.tag || "Olfactory Drop"}</span>
-                    <h4 className="text-white font-light text-2xl mb-1 font-serif">{perfume.name}</h4>
-                    <p className="text-white/60 text-[10px] uppercase tracking-widest mb-6 italic">{perfume.inspired_by}</p>
-                    <button className="w-full py-4 bg-white text-black text-[10px] font-bold tracking-[0.2em] uppercase rounded-full hover:bg-[#B8860B] hover:text-white transition-all duration-500 shadow-xl font-sans">
-                      Notify Me Pipeline
-                    </button>
-                  </div>
+        <div className="max-w-7xl mx-auto flex gap-8 overflow-x-auto pb-8 snap-x snap-mandatory scroll-smooth no-scrollbar">
+          {comingSoon.map((perfume) => (
+            <div key={perfume.id} className="min-w-[300px] md:min-w-[380px] snap-start flex-shrink-0 bg-white border border-gray-100 rounded-[2.5rem] overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 flex flex-col justify-between p-4 group">
+              <div className="relative h-[320px] rounded-[1.8rem] overflow-hidden bg-gray-50 mb-6">
+                <img src={perfume.image_url || "/BLUE-DE.jpeg"} alt={perfume.name} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" />
+                <div className="absolute top-4 left-4 bg-white/20 backdrop-blur-md border border-white/30 text-white text-[9px] font-bold px-4 py-1.5 rounded-full uppercase font-sans tracking-widest">
+                  Next Launch
                 </div>
               </div>
-            ))}
-          </div>
+
+              <div className="px-2 pb-2 space-y-3 text-left">
+                <h4 className="text-gray-900 text-xl font-medium">{perfume.name}</h4>
+                <p className="text-[#B8860B] text-[11px] font-sans tracking-wide uppercase italic">
+                  {perfume.inspired_by ? `Inspired by ${perfume.inspired_by}` : 'Original Formula'}
+                </p>
+                <p className="text-gray-500 text-xs font-sans font-light line-clamp-2 leading-relaxed">
+                  {perfume.description || 'Pre-booking slots opening up soon for this limited perfume batch.'}
+                </p>
+                <button className="w-full py-3.5 bg-gray-900 text-white text-[11px] font-bold tracking-widest uppercase rounded-xl hover:bg-[#B8860B] transition-colors font-sans mt-2">
+                  Get Notified
+                </button>
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 
-      {/* 5. SIDEBAR INTERACTIVE SLIDER SHOPPING CART DRAWER OVERLAY */}
+      {/* 5. SIDEBAR LUXURY SHOPPING BASKET OVERLAY */}
       {isCartOpen && (
-        <div className="fixed inset-0 z-[200] flex justify-end bg-black/40 backdrop-blur-sm animate-fade-in">
-          {/* Backdrop Closer */}
+        <div className="fixed inset-0 z-[200] flex justify-end bg-black/40 backdrop-blur-md transition-all">
           <div className="absolute inset-0" onClick={() => setIsCartOpen(false)}></div>
           
-          <div className="w-full max-w-md bg-white h-full relative z-10 shadow-2xl p-8 flex flex-col justify-between border-l border-gray-100">
+          <div className="w-full max-w-md bg-white h-full relative z-10 shadow-2xl p-8 flex flex-col justify-between border-l border-gray-100 animate-slide-in">
             <div>
-              <div className="flex items-center justify-between border-b pb-6 mb-6">
+              <div className="flex items-center justify-between border-b border-gray-100 pb-6 mb-6">
                 <div>
-                  <h3 className="text-sm font-bold uppercase tracking-widest text-gray-900">Your Basket</h3>
-                  <p className="text-[10px] text-gray-400 font-mono mt-0.5">Allocated elements: {totalCartItems}</p>
+                  <h3 className="text-base font-bold uppercase tracking-wider text-gray-900 font-sans">Your Shopping Bag</h3>
+                  <p className="text-[11px] text-gray-400 font-sans mt-0.5">Total selected items: {totalCartItems}</p>
                 </div>
                 <button 
                   onClick={() => setIsCartOpen(false)}
-                  className="text-gray-400 hover:text-gray-900 text-xs font-bold font-sans uppercase tracking-wider bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-100"
+                  className="text-gray-400 hover:text-gray-900 text-xs font-bold font-sans bg-gray-50 hover:bg-gray-100 px-3 py-2 rounded-xl border border-gray-200 transition-colors"
                 >
                   Close ✕
                 </button>
               </div>
 
-              {/* Items Loop inside Cart View Drawer Panel */}
               {cart.length === 0 ? (
-                <div className="text-center py-20">
-                  <p className="text-gray-400 font-serif italic text-sm">Your luxury basket is currently empty.</p>
-                  <button onClick={() => setIsCartOpen(false)} className="mt-4 text-[10px] text-[#B8860B] uppercase font-bold font-sans tracking-widest border border-[#B8860B]/20 px-4 py-2 rounded-full hover:bg-[#B8860B] hover:text-white transition-all">Start Exploring</button>
+                <div className="text-center py-24 space-y-4">
+                  <p className="text-gray-400 font-serif italic text-sm">Your luxury shopping basket is currently empty.</p>
+                  <button onClick={() => setIsCartOpen(false)} className="text-[11px] text-[#B8860B] uppercase font-bold font-sans tracking-widest border border-[#B8860B]/30 px-6 py-2.5 rounded-full hover:bg-[#B8860B] hover:text-white transition-all">
+                    Start Shopping
+                  </button>
                 </div>
               ) : (
-                <div className="overflow-y-auto max-h-[55vh] space-y-4 pr-1 no-scrollbar">
+                <div className="overflow-y-auto max-h-[58vh] space-y-4 pr-1 no-scrollbar">
                   {cart.map((item) => (
-                    <div key={item.id} className="flex items-center gap-4 bg-gray-50/50 p-3 rounded-2xl border border-gray-100/70">
-                      <img src={item.image_url} alt="Cart Element" className="w-16 h-16 object-cover rounded-xl border bg-white flex-shrink-0" />
-                      <div className="flex-1 min-w-0">
-                        <h4 className="text-xs font-bold text-gray-900 truncate uppercase tracking-wide">{item.name}</h4>
-                        <p className="text-[10px] text-gray-400 font-sans mt-0.5">Qty: {item.quantity} × Rs. {item.price}</p>
-                        <p className="text-xs font-bold text-[#B8860B] font-sans mt-1">Rs. {item.price * item.quantity}</p>
+                    <div key={item.id} className="flex items-center gap-4 bg-gray-50/70 p-3 rounded-2xl border border-gray-100">
+                      <img src={item.image_url} alt="Product Thumbnail" className="w-16 h-16 object-cover rounded-xl border bg-white flex-shrink-0" />
+                      <div className="flex-1 min-w-0 text-left space-y-0.5">
+                        <h4 className="text-xs font-bold text-gray-900 truncate uppercase font-sans tracking-wide">{item.name}</h4>
+                        <p className="text-[10px] text-gray-400 font-sans font-medium">Quantity: {item.quantity} × Rs. {item.price}</p>
+                        <p className="text-xs font-bold text-[#B8860B] font-sans">Total: Rs. {item.price * item.quantity}</p>
                       </div>
                       <button 
                         onClick={() => removeFromCart(item.id)}
-                        className="text-xs text-rose-500 hover:bg-rose-50 px-2 py-1.5 rounded-lg font-bold"
+                        className="text-xs text-gray-400 hover:text-rose-600 p-2 hover:bg-rose-50 rounded-xl transition-colors"
                       >
                         ✕
                       </button>
@@ -248,20 +269,20 @@ export default function LuxuryLanding() {
               )}
             </div>
 
-            {/* Bottom Checkout Navigation Trigger Frame Action Footer block */}
             {cart.length > 0 && (
-              <div className="border-t pt-6 space-y-4">
-                <div className="flex justify-between items-center text-sm font-bold">
-                  <span className="text-gray-500 font-light font-serif">Subtotal Amount:</span>
-                  <span className="text-xl text-[#B8860B] font-sans font-extrabold">Rs. {cartTotalPrice}</span>
+              <div className="border-t border-gray-100 pt-6 space-y-4">
+                <div className="flex justify-between items-center text-sm font-bold font-sans">
+                  <span className="text-gray-500 font-light">Subtotal Balance:</span>
+                  <span className="text-xl text-[#B8860B] font-bold">Rs. {cartTotalPrice}</span>
                 </div>
-                <p className="text-[9px] text-gray-400 uppercase font-mono tracking-wider leading-relaxed">📦 Free standard luxury delivery across Pakistan via secure transit nodes protocol.</p>
-                
+                <p className="text-[10px] text-gray-400 uppercase font-sans tracking-wide leading-relaxed bg-gray-50 p-3 rounded-xl text-center border border-gray-100">
+                  📦 Free standard shipping across Pakistan included with your order.
+                </p>
                 <Link 
                   href="/checkout" 
-                  className="w-full py-4 bg-slate-950 text-white rounded-full text-xs font-bold uppercase tracking-widest text-center block hover:bg-[#B8860B] transition-all shadow-xl font-sans pt-4"
+                  className="w-full py-4 bg-gray-900 text-white rounded-full text-xs font-bold uppercase tracking-widest text-center block hover:bg-[#B8860B] transition-all shadow-xl font-sans"
                 >
-                  Proceed to Secure Checkout
+                  Proceed to Checkout
                 </Link>
               </div>
             )}
@@ -269,9 +290,9 @@ export default function LuxuryLanding() {
         </div>
       )}
 
-      {/* 6. GLOBAL LUXURY FOOTER METADATA LAYER */}
+      {/* 6. GLOBAL FOOTER */}
       <footer className="py-16 px-12 bg-gray-50 text-center border-t border-gray-100">
-        <p className="text-[10px] tracking-widest text-gray-400 uppercase mb-8 font-sans">© 2026 Khushbu-e-Khaas | Pakistan</p>
+        <p className="text-[11px] tracking-widest text-gray-400 uppercase font-sans">© 2026 Khushbu-e-Khaas | Pakistan</p>
       </footer>
 
     </div>
