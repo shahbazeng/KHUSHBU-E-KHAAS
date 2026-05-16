@@ -59,14 +59,36 @@ export default function AdminDashboard() {
   }, []);
 
   const fetchData = async () => {
-    const { data: cats } = await supabase.from('mastan_categories').select('*');
-    const { data: pfs } = await supabase.from('mastan_perfumes').select('*');
-    const { data: ords } = await supabase.from('orders').select('*').order('created_at', { ascending: false });
-    
-    if (cats) setCategories(cats);
-    if (pfs) setPerfumes(pfs);
-    if (ords) setOrders(ords);
-  };
+  const { data: cats } = await supabase.from('mastan_categories').select('*');
+  const { data: pfs } = await supabase.from('mastan_perfumes').select('*');
+  
+  // Real-time complete tracking matrix pulling relational items data nested
+  const { data: ords } = await supabase
+    .from('orders')
+    .select(`
+      *,
+      order_items (
+        id,
+        quantity,
+        price,
+        mastan_perfumes (
+          name,
+          image_url,
+          inspired_by
+        )
+      )
+    `)
+    .order('created_at', { ascending: false });
+  
+  if (cats) setCategories(cats);
+  if (pfs) setPerfumes(pfs);
+  if (ords) setOrders(ords);
+}; 
+
+
+
+
+
 
   // DYNAMIC IMAGE ASSETS UPLOAD DISPATCHER (Supabase Storage integration)
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -431,76 +453,121 @@ export default function AdminDashboard() {
             </div>
           )}
 
-          {/* TAB 3: LOGISTICS SHIPPING TRACKER ENGINE */}
-          {activeTab === 'orders' && (
-            <div className="animate-fade-in">
-              <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                  <h2 className="text-xl font-bold tracking-tight text-gray-900">Order Dispatch Router</h2>
-                  <p className="text-xs text-gray-400 mt-1">Review live user requests, logistics paths tracking, and transactional flags metrics.</p>
-                </div>
-                
-                <div className="flex items-center gap-3">
-                  <input type="text" placeholder="Search customer name/email..." value={orderSearch} onChange={(e) => setOrderSearch(e.target.value)} className="border border-gray-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-[#B8860B] w-64 bg-white shadow-sm" />
-                  <select value={orderFilter} onChange={(e) => setOrderFilter(e.target.value)} className="border border-gray-200 rounded-xl px-4 py-2.5 text-xs bg-white focus:outline-none focus:border-[#B8860B] shadow-sm">
-                    <option value="all">All Lifecycles</option>
-                    <option value="pending">Pending Processing</option>
-                    <option value="shipped">Logistics Shipped</option>
-                    <option value="delivered">Finalized Delivered</option>
-                  </select>
-                </div>
-              </div>
+          {/* TAB 3: LIVE ORDERS MANAGEMENT MATRIX (WITH LIVE ITEMS RECOGNITION TREE) */}
+{activeTab === 'orders' && (
+  <div className="animate-fade-in">
+    <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div>
+        <h2 className="text-xl font-bold tracking-tight text-gray-900">Order Dispatch Router</h2>
+        <p className="text-xs text-gray-400 mt-1">Review live user requests, logistics paths tracking, and transactional flags metrics.</p>
+      </div>
+      
+      <div className="flex items-center gap-3">
+        <input type="text" placeholder="Search customer name/email..." value={orderSearch} onChange={(e) => setOrderSearch(e.target.value)} className="border border-gray-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-[#B8860B] w-64 bg-white shadow-sm" />
+        <select value={orderFilter} onChange={(e) => setOrderFilter(e.target.value)} className="border border-gray-200 rounded-xl px-4 py-2.5 text-xs bg-white focus:outline-none focus:border-[#B8860B] shadow-sm">
+          <option value="all">All Lifecycles</option>
+          <option value="pending">Pending Processing</option>
+          <option value="shipped">Logistics Shipped</option>
+          <option value="delivered">Finalized Delivered</option>
+        </select>
+      </div>
+    </div>
 
-              <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-                <table className="w-full text-left text-xs text-gray-500">
-                  <thead className="bg-gray-50 text-[10px] text-gray-400 uppercase tracking-wider border-b border-gray-100">
-                    <tr>
-                      <th className="px-6 py-4 font-semibold">User Matrix Account</th>
-                      <th className="px-6 py-4 font-semibold">Total Order Valuation</th>
-                      <th className="px-6 py-4 font-semibold">Logistics Lifecycle Status</th>
-                      <th className="px-6 py-4 font-semibold text-right">Update Order Pipeline</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-100 text-gray-700">
-                    {filteredOrders.length === 0 ? (
-                      <tr>
-                        <td colSpan={4} className="text-center py-12 text-gray-400 font-medium">No system order items tracked on specified filter constraints.</td>
-                      </tr>
-                    ) : filteredOrders.map((order) => (
-                      <tr key={order.id} className="hover:bg-gray-50/70 transition-colors">
-                        <td className="px-6 py-4">
-                          <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center font-bold font-mono text-slate-700">
-                              {order.customer_name ? order.customer_name[0].toUpperCase() : 'U'}
-                            </div>
-                            <div>
-                              <p className="font-bold text-gray-900 text-sm">{order.customer_name}</p>
-                              <p className="text-[10px] text-gray-400 font-mono mt-0.5">{order.customer_email}</p>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 font-bold font-mono text-gray-900 text-sm">Rs. {order.total_price}</td>
-                        <td className="px-6 py-4">
-                          <span className={`text-[9px] font-bold px-3 py-1 rounded-full uppercase tracking-wider ${
-                            order.status === 'delivered' ? 'bg-green-50 text-green-700 border border-green-200' : 
-                            order.status === 'shipped' ? 'bg-blue-50 text-blue-700 border border-blue-200' : 
-                            'bg-amber-50 text-amber-700 border border-amber-200 animate-pulse'
-                          }`}>{order.status}</span>
-                        </td>
-                        <td className="px-6 py-4 text-right">
-                          <select value={order.status} onChange={(e) => handleStatusChange(order.id, e.target.value)} className="border border-gray-200 text-xs font-semibold rounded-xl px-3 py-2 bg-white focus:outline-none focus:border-[#B8860B] shadow-sm cursor-pointer text-gray-700">
-                            <option value="pending">Mark Pending</option>
-                            <option value="shipped">Mark Logistics Shipped</option>
-                            <option value="delivered">Mark Finalized Delivered</option>
-                          </select>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          )}
+    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+      <table className="w-full text-left text-xs text-gray-500">
+        <thead className="bg-gray-50 text-[10px] text-gray-400 uppercase tracking-wider border-b border-gray-100">
+          <tr>
+            <th className="px-6 py-4 font-semibold">User Matrix Account</th>
+            <th className="px-6 py-4 font-semibold">Items Requested Specifications</th>
+            <th className="px-6 py-4 font-semibold">Total Order Valuation</th>
+            <th className="px-6 py-4 font-semibold">Logistics Status</th>
+            <th className="px-6 py-4 font-semibold text-right">Update Pipeline</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-gray-100 text-gray-700">
+          {filteredOrders.length === 0 ? (
+            <tr>
+              <td colSpan={5} className="text-center py-12 text-gray-400 font-medium">No system order items tracked on specified filter constraints.</td>
+            </tr>
+          ) : filteredOrders.map((order) => (
+            <tr key={order.id} className="hover:bg-gray-50/70 transition-colors align-top">
+              {/* User Account Details */}
+              <td className="px-6 py-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center font-bold font-mono text-slate-700">
+                    {order.customer_name ? order.customer_name[0].toUpperCase() : 'U'}
+                  </div>
+                  <div>
+                    <p className="font-bold text-gray-900 text-sm">{order.customer_name}</p>
+                    <p className="text-[10px] text-gray-400 font-mono mt-0.5">{order.customer_email}</p>
+                  </div>
+                </div>
+              </td>
+
+              {/* DYNAMIC PRODUCTS ITEMS INNER CELL SUB-RENDER MATRIX */}
+              <td className="px-6 py-4">
+                <div className="space-y-3 max-w-sm">
+                  {order.order_items && order.order_items.map((item: any) => (
+                    <div key={item.id} className="flex items-center gap-3 bg-gray-50/50 p-2 rounded-xl border border-gray-100/60">
+                      <img 
+                        src={item.mastan_perfumes?.image_url || 'https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80'} 
+                        alt="Perfume variant asset" 
+                        className="w-8 h-8 object-cover rounded-lg border bg-white flex-shrink-0"
+                      />
+                      <div className="min-w-0">
+                        <p className="font-bold text-gray-950 text-xs truncate uppercase tracking-wide">
+                          {item.mastan_perfumes?.name || 'Fragrance Variant'}
+                        </p>
+                        <p className="text-[9px] text-gray-400 font-sans mt-0.5">
+                          Qty: <strong className="text-gray-800">{item.quantity}</strong> × Rs. {item.price}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                  {(!order.order_items || order.order_items.length === 0) && (
+                    <span className="text-gray-400 font-serif italic text-[11px]">Legacy row logs - nested relational mapping mismatch.</span>
+                  )}
+                </div>
+              </td>
+
+              {/* Total Price valuation */}
+              <td className="px-6 py-4 font-bold font-mono text-gray-900 text-sm pt-6">
+                Rs. {order.total_price}
+              </td>
+
+              {/* Logistics tracking flags state */}
+              <td className="px-6 py-4 pt-6">
+                <span className={`text-[9px] font-bold px-3 py-1 rounded-full uppercase tracking-wider ${
+                  order.status === 'delivered' ? 'bg-green-50 text-green-700 border border-green-200' : 
+                  order.status === 'shipped' ? 'bg-blue-50 text-blue-700 border border-blue-200' : 
+                  'bg-amber-50 text-amber-700 border border-amber-200 animate-pulse'
+                }`}>{order.status}</span>
+              </td>
+
+              {/* Action changer selection block */}
+              <td className="px-6 py-4 text-right pt-5">
+                <select value={order.status} onChange={(e) => handleStatusChange(order.id, e.target.value)} className="border border-gray-200 text-xs font-semibold rounded-xl px-3 py-2 bg-white focus:outline-none focus:border-[#B8860B] shadow-sm cursor-pointer text-gray-700">
+                  <option value="pending">Mark Pending</option>
+                  <option value="shipped">Mark Logistics Shipped</option>
+                  <option value="delivered">Mark Finalized Delivered</option>
+                </select>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+)} 
+
+
+
+
+
+
+
+
+
 
           {/* TAB 4: ADVANCED SECURITY ADMINISTRATIVE IDENTITY LAYER */}
           {activeTab === 'profile' && (
