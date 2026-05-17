@@ -122,8 +122,10 @@ export default function LuxuryLanding() {
         <div className="hidden md:flex space-x-12 text-[11px] uppercase tracking-[0.25em] font-bold">
           <a href="#collection" className={`transition-colors duration-300 ${isScrolled ? 'text-gray-600 hover:text-[#B8860B]' : 'text-gray-300 hover:text-[#D4AF37]'}`}>Our Collection</a>
           <a href="#gifts" className={`transition-colors duration-300 ${isScrolled ? 'text-gray-600 hover:text-[#B8860B]' : 'text-gray-300 hover:text-[#D4AF37]'}`}>Gifting</a>
+
           <a href="#eid-specials" className={`transition-colors duration-300 ${isScrolled ? 'text-gray-600 hover:text-[#B8860B]' : 'text-gray-300 hover:text-[#D4AF37]'}`}>Eid Offers</a>
           <a href="#coming-soon" className={`transition-colors duration-300 ${isScrolled ? 'text-gray-600 hover:text-[#B8860B]' : 'text-gray-300 hover:text-[#D4AF37]'}`}>New Drops</a>
+          <Link href="/shop" className={`transition-colors duration-300 ${isScrolled ? 'text-gray-600 hover:text-[#B8860B]' : 'text-gray-300 hover:text-[#D4AF37]'}`}>Shop</Link>
         </div>
 
         <div className="flex items-center gap-6">
