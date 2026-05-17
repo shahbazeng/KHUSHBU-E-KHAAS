@@ -83,7 +83,7 @@ export default function LuxuryLanding() {
   return (
     <div className="bg-[#FAF9F5] min-h-screen text-[#1C1B17] font-sans antialiased selection:bg-[#B8860B] selection:text-white relative w-full overflow-x-hidden">
       
-      {/* 🔴 INJECTED CSS ANIMATIONS BLOCK ROUTER */}
+      {/* GLOBAL CSS KEYFRAMES ANIMATIONS */}
       <style jsx global>{`
         @keyframes fadeInUp {
           from {
@@ -119,10 +119,10 @@ export default function LuxuryLanding() {
           </span>
         </Link>
         
+        {/* Clean Public Navigation Context Links */}
         <div className="hidden md:flex space-x-12 text-[11px] uppercase tracking-[0.25em] font-bold">
           <a href="#collection" className={`transition-colors duration-300 ${isScrolled ? 'text-gray-600 hover:text-[#B8860B]' : 'text-gray-300 hover:text-[#D4AF37]'}`}>Our Collection</a>
           <a href="#gifts" className={`transition-colors duration-300 ${isScrolled ? 'text-gray-600 hover:text-[#B8860B]' : 'text-gray-300 hover:text-[#D4AF37]'}`}>Gifting</a>
-
           <a href="#eid-specials" className={`transition-colors duration-300 ${isScrolled ? 'text-gray-600 hover:text-[#B8860B]' : 'text-gray-300 hover:text-[#D4AF37]'}`}>Eid Offers</a>
           <a href="#coming-soon" className={`transition-colors duration-300 ${isScrolled ? 'text-gray-600 hover:text-[#B8860B]' : 'text-gray-300 hover:text-[#D4AF37]'}`}>New Drops</a>
           <Link href="/shop" className={`transition-colors duration-300 ${isScrolled ? 'text-gray-600 hover:text-[#B8860B]' : 'text-gray-300 hover:text-[#D4AF37]'}`}>Shop</Link>
@@ -246,7 +246,7 @@ export default function LuxuryLanding() {
         )}
       </section>
 
-      {/* 🔴 NEW INJECTED SECTION 1: GIFTS FOR HIM & HER SPLIT MATRIX */}
+      {/* 4. GIFTS FOR HIM & HER SPLIT MATRIX */}
       <section id="gifts" className="py-24 px-6 md:px-16 max-w-7xl mx-auto border-t border-gray-100">
         <div className="text-center mb-16 space-y-2">
           <h2 className="text-[#B8860B] text-xs tracking-[0.4em] uppercase font-extrabold">The Art of Gifting</h2>
@@ -254,7 +254,6 @@ export default function LuxuryLanding() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-          {/* Gifts For Him */}
           <div className="relative group rounded-[2.5rem] overflow-hidden shadow-md h-[400px] flex flex-col justify-end p-10 border border-gray-200/50">
             <img 
               src="https://images.unsplash.com/photo-1615655096345-61a54750068d?auto=format&fit=crop&q=80&w=800" 
@@ -270,7 +269,6 @@ export default function LuxuryLanding() {
             </div>
           </div>
 
-          {/* Gifts For Her */}
           <div className="relative group rounded-[2.5rem] overflow-hidden shadow-md h-[400px] flex flex-col justify-end p-10 border border-gray-200/50">
             <img 
               src="https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&q=80&w=800" 
@@ -288,7 +286,7 @@ export default function LuxuryLanding() {
         </div>
       </section>
 
-      {/* 🔴 NEW INJECTED SECTION 2: EID SPECIAL OFFERS EXCLUSIVES */}
+      {/* 5. EID SPECIAL OFFERS EXCLUSIVES */}
       <section id="eid-specials" className="py-16 px-6 md:px-16 max-w-7xl mx-auto mb-10 animate-fade-in-up">
         <div className="relative rounded-[3rem] overflow-hidden bg-gradient-to-r from-[#111622] to-[#1F293D] p-8 md:p-16 border border-[#D4AF37]/30 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-10">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(212,175,55,0.1)_0%,transparent_60%)]"></div>
@@ -325,7 +323,7 @@ export default function LuxuryLanding() {
         </div>
       </section>
 
-      {/* 4. LUXURY PRE-RELEASES SNAP CAROUSEL SLIDER */}
+      {/* 6. LUXURY PRE-RELEASES SNAP CAROUSEL SLIDER */}
       <section id="coming-soon" className="py-32 px-6 md:px-16 bg-[#F6F5F0] border-t border-gray-200/60 overflow-hidden">
         <div className="max-w-7xl mx-auto mb-20 text-left space-y-2">
           <h2 className="text-[#B8860B] text-[11px] tracking-[0.4em] uppercase font-extrabold">Exclusive Preview</h2>
@@ -359,7 +357,7 @@ export default function LuxuryLanding() {
         </div>
       </section>
 
-      {/* 5. REFINE LUXURY BASKET OVERLAY DRAWER */}
+      {/* 7. REFINE LUXURY BASKET OVERLAY DRAWER */}
       {isCartOpen && (
         <div className="fixed inset-0 z-[200] flex justify-end bg-slate-950/40 backdrop-blur-md transition-all animate-fade-in">
           <div className="absolute inset-0" onClick={() => setIsCartOpen(false)}></div>
@@ -429,7 +427,7 @@ export default function LuxuryLanding() {
         </div>
       )}
 
-      {/* 6. GRAND LUXURY DYNAMIC FOOTER (2026 IMPERIAL EDITION) */}
+      {/* 8. GRAND LUXURY DYNAMIC FOOTER */}
       <footer className="bg-[#0B0F19] text-gray-400 font-sans text-xs pt-24 pb-12 px-6 md:px-16 border-t border-[#D4AF37]/10 relative z-10 antialiased w-full select-none">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 border-b border-gray-800 pb-16 mb-10 items-start">
           

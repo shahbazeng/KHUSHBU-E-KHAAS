@@ -88,7 +88,7 @@ export default function ShopPage() {
         <div className="hidden md:flex space-x-12 text-[11px] uppercase tracking-[0.25em] font-bold text-gray-600">
           <Link href="/" className="hover:text-[#B8860B] transition-colors">Home</Link>
           <Link href="/shop" className="text-[#B8860B]">Shop Catalog</Link>
-          <Link href="/admin" className="text-gray-400 hover:text-gray-900 transition-colors">Dashboard</Link>
+          
         </div>
         <button 
           onClick={() => setIsCartOpen(true)}
