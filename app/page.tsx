@@ -3,6 +3,8 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useApp } from '@/context/AppContext';
+import { STORE_CONFIG } from '../src/config/storeConfig';
+import MegaMenu from '@/components/MegaMenu';
 import Link from 'next/link';
 
 interface Perfume {
@@ -19,6 +21,7 @@ interface Perfume {
 }
 
 export default function LuxuryLanding() {
+const [isMegaMenuOpen, setIsMegaMenuOpen] = useState(false);
   const [products, setProducts] = useState<Perfume[]>([]);
   const [loading, setLoading] = useState(true);
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -108,46 +111,72 @@ export default function LuxuryLanding() {
       `}</style>
 
       {/* 1. PREMIUM GOLD GLASSMORPHISM NAVBAR */}
-      <nav className={`fixed top-0 w-full z-[100] px-6 md:px-16 py-4 flex justify-between items-center transition-all duration-500 ${
-        isScrolled 
-          ? 'bg-white/90 backdrop-blur-xl shadow-md border-b border-[#D4AF37]/20 py-3' 
-          : 'bg-gradient-to-b from-[#111622]/95 to-[#111622]/80 backdrop-blur-md text-white border-b border-[#D4AF37]/10'
-      }`}>
-        <Link href="/" className="flex items-center gap-2 group">
-          <span className={`tracking-[0.3em] text-sm md:text-base font-extrabold uppercase transition-colors duration-300 ${isScrolled ? 'text-gray-900' : 'text-white'}`}>
-            Khushbu<span className="text-[#D4AF37] font-serif lowercase italic font-normal tracking-normal">e</span>Khaas
-          </span>
-        </Link>
-        
-        {/* Clean Public Navigation Context Links */}
-        <div className="hidden md:flex space-x-12 text-[11px] uppercase tracking-[0.25em] font-bold">
-          <a href="#collection" className={`transition-colors duration-300 ${isScrolled ? 'text-gray-600 hover:text-[#B8860B]' : 'text-gray-300 hover:text-[#D4AF37]'}`}>Our Collection</a>
-          <a href="#gifts" className={`transition-colors duration-300 ${isScrolled ? 'text-gray-600 hover:text-[#B8860B]' : 'text-gray-300 hover:text-[#D4AF37]'}`}>Gifting</a>
-          <a href="#eid-specials" className={`transition-colors duration-300 ${isScrolled ? 'text-gray-600 hover:text-[#B8860B]' : 'text-gray-300 hover:text-[#D4AF37]'}`}>Eid Offers</a>
-          <a href="#coming-soon" className={`transition-colors duration-300 ${isScrolled ? 'text-gray-600 hover:text-[#B8860B]' : 'text-gray-300 hover:text-[#D4AF37]'}`}>New Drops</a>
-          <Link href="/shop" className={`transition-colors duration-300 ${isScrolled ? 'text-gray-600 hover:text-[#B8860B]' : 'text-gray-300 hover:text-[#D4AF37]'}`}>Shop</Link>
-        </div>
 
-        <div className="flex items-center gap-6">
-          {user ? (
-            <span className={`text-[10px] font-mono uppercase px-3 py-1 rounded-full font-bold transition-all duration-300 ${
-              isScrolled ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-white/10 text-emerald-400 border border-emerald-500/30'
-            }`}>Active Session</span>
-          ) : (
-            <Link href="/auth" className={`text-[11px] uppercase tracking-wider transition-colors font-bold ${isScrolled ? 'text-gray-500 hover:text-gray-900' : 'text-gray-400 hover:text-white'}`}>Login</Link>
-          )}
-          
-          <button 
-            onClick={() => setIsCartOpen(true)}
-            className="text-[11px] bg-gradient-to-r from-[#B8860B] to-[#D4AF37] text-white px-6 py-2.5 rounded-full hover:brightness-110 transition-all tracking-widest font-bold shadow-md shadow-[#B8860B]/10 flex items-center gap-2 hover:scale-[1.03] active:scale-[0.98]"
-          >
-            BAG 
-            <span className="bg-white text-gray-900 text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-mono font-bold shadow-sm">
-              {totalCartItems}
-            </span>
-          </button>
-        </div>
-      </nav>
+     <nav className={`fixed top-0 w-full z-[100] px-6 md:px-16 py-4 flex justify-between items-center transition-all duration-500 ${
+  isScrolled 
+    ? 'bg-white/90 backdrop-blur-xl shadow-md border-b border-[#D4AF37]/20 py-3' 
+    : 'bg-gradient-to-b from-[#111622]/95 to-[#111622]/80 backdrop-blur-md text-white border-b border-[#D4AF37]/10'
+}`}>
+  <Link href="/" className="flex items-center gap-2 group">
+    <span className={`tracking-[0.3em] text-sm md:text-base font-extrabold uppercase transition-colors duration-300 ${isScrolled ? 'text-gray-900' : 'text-white'}`}>
+      {STORE_CONFIG.brandName}
+    </span>
+  </Link>
+  
+  {/* Clean Public Navigation Context Links */}
+  <div className="hidden md:flex space-x-12 text-[11px] uppercase tracking-[0.25em] font-bold relative">
+    <Link href="/" className={`transition-colors duration-300 ${isScrolled ? 'text-gray-600 hover:text-[#B8860B]' : 'text-gray-300 hover:text-[#D4AF37]'}`}>Home</Link>
+    
+    {/* DYNAMIC MEGA MENU HOVER CONTROL POINTER */}
+    <div 
+      className="relative py-1"
+      onMouseEnter={() => setIsMegaMenuOpen(true)}
+    >
+      <Link 
+        href="/shop" 
+        className={`transition-colors duration-300 ${isScrolled ? 'text-gray-600 hover:text-[#B8860B]' : 'text-[#D4AF37] hover:text-[#D4AF37]'}`}
+      >
+        Our Collection ▾
+      </Link>
+    </div>
+    
+    <a href="#gifts" className={`transition-colors duration-300 ${isScrolled ? 'text-gray-600 hover:text-[#B8860B]' : 'text-gray-300 hover:text-[#D4AF37]'}`}>Gifting</a>
+    <a href="#eid-specials" className={`transition-colors duration-300 ${isScrolled ? 'text-gray-600 hover:text-[#B8860B]' : 'text-gray-300 hover:text-[#D4AF37]'}`}>Eid Offers</a>
+  </div>
+
+  {/* Mega Menu Integration overlay grid element attach inside nav layout boundary */}
+  <MegaMenu isOpen={isMegaMenuOpen} onClose={() => setIsMegaMenuOpen(false)} isScrolled={isScrolled} />
+
+  <div className="flex items-center gap-6">
+    {/* Dynamic Session Conditional Check Logic Node */}
+    {user ? (
+      <Link 
+        href="/profile" 
+        className={`text-[10px] font-sans uppercase px-4 py-2 rounded-xl font-bold tracking-wider border transition-all duration-300 shadow-sm ${
+          isScrolled 
+            ? 'bg-amber-50/50 text-[#B8860B] border-[#B8860B]/20 hover:bg-[#B8860B] hover:text-white' 
+            : 'bg-white/5 text-[#D4AF37] border-[#D4AF37]/30 hover:bg-white hover:text-gray-900'
+        }`}
+      >
+        My Orders 📦
+      </Link>
+    ) : (
+      <Link href="/auth" className={`text-[11px] uppercase tracking-wider transition-colors font-bold ${isScrolled ? 'text-gray-500 hover:text-gray-900' : 'text-gray-400 hover:text-white'}`}>
+        Login
+      </Link>
+    )}
+    
+    <button 
+      onClick={() => setIsCartOpen(true)}
+      className="text-[11px] bg-gradient-to-r from-[#B8860B] to-[#D4AF37] text-white px-6 py-2.5 rounded-full hover:brightness-110 transition-all tracking-widest font-bold shadow-md shadow-[#B8860B]/10 flex items-center gap-2 hover:scale-[1.03] active:scale-[0.98]"
+    >
+      BAG 
+      <span className="bg-white text-gray-900 text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-mono font-bold shadow-sm">
+        {totalCartItems}
+      </span>
+    </button>
+  </div>
+</nav>
 
       {/* 2. PREMIUM HERO SHOWCASE SECTION */}
       <header className="relative min-h-[90vh] w-full bg-[#111622] flex items-center overflow-hidden pt-24 px-6 md:px-20 border-b border-[#D4AF37]/20">
@@ -156,15 +185,17 @@ export default function LuxuryLanding() {
           
           <div className="text-left space-y-8 animate-fade-in-up">
             <div className="flex items-center gap-3">
-              <span className="text-[#D4AF37] tracking-[0.4em] text-[11px] uppercase font-extrabold">Artisanal Inspired Perfumery</span>
+              <span className="text-[#D4AF37] tracking-[0.4em] text-[11px] uppercase font-extrabold">{STORE_CONFIG.tagline}</span>
               <div className="h-[1px] w-20 bg-[#D4AF37]/30"></div>
             </div>
             <h1 className="text-5xl md:text-[5.5rem] font-light text-white leading-[1.08] tracking-tight font-serif">
-              Elegance in <br />
-              <span className="italic text-transparent bg-clip-text bg-gradient-to-r from-[#B8860B] via-[#F3E5AB] to-[#D4AF37] drop-shadow-sm">Every Spray</span>
+              {STORE_CONFIG.heroTitleFirst} <br />
+              <span className="italic text-transparent bg-clip-text bg-gradient-to-r from-[#B8860B] via-[#F3E5AB] to-[#D4AF37] drop-shadow-sm">
+                {STORE_CONFIG.heroTitleItalic}
+              </span>
             </h1>
             <p className="text-gray-400 text-sm md:text-base font-normal leading-relaxed max-w-lg">
-              Experience ultra-premium scent profiles meticulously matched to global luxury masterpieces. Long-lasting compositions configured for the refined connoisseur.
+              {STORE_CONFIG.description}
             </p>
             <div className="pt-4 flex items-center gap-6">
               <a href="#collection" className="px-10 py-4 bg-gradient-to-r from-[#B8860B] to-[#D4AF37] text-white rounded-full text-[11px] uppercase tracking-widest font-bold hover:brightness-110 transition-all shadow-xl shadow-[#B8860B]/10 hover:scale-[1.03]">
@@ -427,44 +458,35 @@ export default function LuxuryLanding() {
         </div>
       )}
 
-      {/* 8. GRAND LUXURY DYNAMIC FOOTER */}
+      {/* 8. GRAND LUXURY DYNAMIC FOOTER (2026 SaaS CONFIG LOADED) */}
       <footer className="bg-[#0B0F19] text-gray-400 font-sans text-xs pt-24 pb-12 px-6 md:px-16 border-t border-[#D4AF37]/10 relative z-10 antialiased w-full select-none">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 border-b border-gray-800 pb-16 mb-10 items-start">
           
           <div className="space-y-6 flex flex-col justify-start">
             <h3 className="tracking-[0.25em] text-sm font-extrabold text-white uppercase">
-              Khushbu<span className="text-[#D4AF37] font-serif lowercase italic font-normal tracking-normal">e</span>Khaas
+              {STORE_CONFIG.brandName}
             </h3>
             <p className="text-gray-400 text-xs leading-relaxed font-light">
-              Crafting supreme, long-lasting fragrance variants inspired by iconic luxury scents from across the globe.
+              {STORE_CONFIG.description}
             </p>
             
+            {/* SOCIAL LINKS BIND FROM CONFIG ARRAY */}
             <div className="flex items-center gap-3.5 pt-1">
-              <a href="https://instagram.com" target="_blank" rel="noreferrer" className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-300 hover:text-white hover:border-[#D4AF37] hover:bg-gradient-to-tr hover:from-[#f9ce34] hover:via-[#ee2a7b] hover:to-[#6228d7] transition-all duration-300 shadow-sm group" aria-label="Instagram">
-                <svg className="w-4 h-4 transition-colors group-hover:text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <a href={STORE_CONFIG.socials.instagram} target="_blank" rel="noreferrer" className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-300 hover:text-white hover:border-[#D4AF37] transition-all duration-300 shadow-sm" aria-label="Instagram">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <rect x="2" y="2" width="20" h="20" rx="5" ry="5"></rect>
                   <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                  <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
                 </svg>
               </a>
-              <a href="https://facebook.com" target="_blank" rel="noreferrer" className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-300 hover:text-white hover:border-[#3b5998] hover:bg-[#3b5998] transition-all duration-300 shadow-sm group" aria-label="Facebook">
-                <svg className="w-4 h-4 transition-colors group-hover:text-white" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M9 8H7v3h2v9h3v-9h3l.5-3H12V6c0-.88.72-1 1-1h2V2h-3a5 5 0 0 0-5 5v1z"></path>
-                </svg>
-              </a>
-              <a href="https://threads.net" target="_blank" rel="noreferrer" className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-300 hover:text-white hover:border-white hover:bg-black transition-all duration-300 shadow-sm group" aria-label="Threads">
-                <svg className="w-4 h-4 transition-colors group-hover:text-white" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm3.36 12.3c-.29.29-.65.43-1.06.43-.42 0-.78-.14-1.07-.43-.28-.28-.42-.64-.42-1.06V9.8c0-.41.14-.77.42-1.05.29-.29.65-.43 1.07-.43.41 0 .77.14 1.06.43.29.28.43.64.43 1.05v3.44c0 .42-.14.78-.43 1.06z"></path>
-                </svg>
-              </a>
-              <a href="https://wa.me/923001234567" target="_blank" rel="noreferrer" className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-300 hover:text-white hover:border-[#25D366] hover:bg-[#25D366] transition-all duration-300 shadow-sm group" aria-label="WhatsApp">
-                <svg className="w-4 h-4 transition-colors group-hover:text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.94.725l.548 2.2a1 1 0 01-.321.988l-1.305.98a10.582 10.582 0 004.872 4.872l.98-1.305a1 1 0 01.988-.321l2.2.548a1 1 0 01.725.94V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+              <a href={STORE_CONFIG.socials.whatsapp} target="_blank" rel="noreferrer" className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-300 hover:text-white hover:border-[#25D366] transition-all duration-300 shadow-sm" aria-label="WhatsApp">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.94.725l.548 2.2a1 1 0 01-.321.988l-1.305.98z"></path>
                 </svg>
               </a>
             </div>
           </div>
 
+          {/* Navigation Links */}
           <div className="space-y-4 flex flex-col justify-start">
             <h4 className="text-white text-[11px] uppercase tracking-widest font-bold">Navigation</h4>
             <ul className="space-y-2.5 text-gray-400 font-medium text-xs">
@@ -479,22 +501,21 @@ export default function LuxuryLanding() {
             <h4 className="text-white text-[11px] uppercase tracking-widest font-bold">Bespoke Services</h4>
             <ul className="space-y-2.5 text-gray-400 font-medium text-xs">
               <li><a href="#consultation" className="hover:text-[#D4AF37] transition-colors duration-200">Private Consultation</a></li>
-              <li><a href="#gifting" className="hover:text-[#D4AF37] transition-colors duration-200">Corporate Gifting</a></li>
               <li><a href="#custom" className="hover:text-[#D4AF37] transition-colors duration-200">Custom Scent Blends</a></li>
             </ul>
           </div>
 
+          {/* BOUTIQUE INFO BOUND VIA CONFIG CONFIGURATION OBJECT */}
           <div className="space-y-4 flex flex-col justify-start">
             <h4 className="text-white text-[11px] uppercase tracking-widest font-bold">Flagship Boutique</h4>
             <div className="flex items-start gap-4 text-gray-400 text-xs font-normal leading-relaxed bg-white/[0.02] p-5 rounded-[1.5rem] border border-white/5 shadow-inner w-full hover:border-[#D4AF37]/30 transition-colors duration-300">
               <svg className="w-5 h-5 text-[#D4AF37] flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243A8 8 0 1111.314 0z" />
               </svg>
               <div className="min-w-0">
-                <p className="text-white font-bold font-serif text-sm mb-1 truncate">Khushbu-e-Khaas Boutique</p>
-                <p className="font-semibold text-gray-300 truncate">Shop # E5-B2, Grand Square Mall,</p>
-                <p className="text-gray-500 text-[11px] font-mono mt-1 tracking-wide truncate">Main Boulevard Gulberg, Lahore</p>
+                <p className="text-white font-bold font-serif text-sm mb-1 truncate">{STORE_CONFIG.boutiqueName}</p>
+                <p className="font-semibold text-gray-300 truncate">{STORE_CONFIG.addressLine1}</p>
+                <p className="text-gray-500 text-[11px] font-mono mt-1 tracking-wide truncate">{STORE_CONFIG.addressLine2}</p>
               </div>
             </div>
           </div>
@@ -503,19 +524,13 @@ export default function LuxuryLanding() {
 
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6 text-gray-500 text-[11px] font-medium pt-6 border-t border-gray-800/40">
           <p className="tracking-wide text-center sm:text-left font-sans text-gray-500">
-            © 2026 Khushbu-e-Khaas Scent Matrix. Engineered securely by Shahbaz Ali.
+            {STORE_CONFIG.footerCopyright}
           </p>
           
           <div className="flex items-center gap-3 font-sans text-[10px] tracking-wide font-bold flex-wrap justify-center">
-            <span className="bg-white/[0.02] border border-white/10 px-3 py-1.5 rounded-xl text-gray-400 hover:text-[#249a43] hover:border-[#249a43]/40 transition-colors cursor-default flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-[#249a43]"></span> Easypaisa
-            </span>
-            <span className="bg-white/[0.02] border border-white/10 px-3 py-1.5 rounded-xl text-gray-400 hover:text-[#00aaff] hover:border-[#00aaff]/40 transition-colors cursor-default flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-[#00aaff]"></span> NayaPay
-            </span>
-            <span className="bg-white/[0.02] border border-white/10 px-3 py-1.5 rounded-xl text-gray-400 hover:text-[#005a9c] hover:border-[#005a9c]/40 transition-colors cursor-default flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-[#005a9c]"></span> Bank AL Habib
-            </span>
+            <span className="bg-white/[0.02] border border-white/10 px-3 py-1.5 rounded-xl text-gray-400">Easypaisa</span>
+            <span className="bg-white/[0.02] border border-white/10 px-3 py-1.5 rounded-xl text-gray-400">NayaPay</span>
+            <span className="bg-white/[0.02] border border-white/10 px-3 py-1.5 rounded-xl text-gray-400">Bank AL Habib</span>
           </div>
         </div>
       </footer>
